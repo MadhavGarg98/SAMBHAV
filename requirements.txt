@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+requests
+llama-index
+llama-index-embeddings-huggingface
+llama-index-llms-groq
+pypdf
+python-docx
+llama-index-vector-stores-pinecone
+pinecone-client
+gunicorn
+sentence-transformers
+torch
+httpx
+aiofiles
