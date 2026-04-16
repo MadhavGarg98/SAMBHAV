@@ -1,0 +1,46 @@
+.chat-window {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.welcome-container {
+  text-align: center;
+  color: rgb(107 114 128);
+  margin-top: 2rem;
+}
+
+.welcome-icon {
+  width: 4rem;
+  height: 4rem;
+  background-color: rgba(251, 146, 54, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.welcome-icon svg {
+  width: 2rem;
+  height: 2rem;
+  color: rgb(251 146 54);
+}
+
+.welcome-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: rgb(17 24 39);
+  margin-bottom: 0.5rem;
+}
+
+.welcome-text {
+  font-size: 0.875rem;
+  color: rgb(107 114 128);
+  max-width: 28rem;
+  margin: 0 auto;
+  line-height: 1.25;
+}
