@@ -1,25 +1,33 @@
-# Use an official Python runtime as a parent image
-FROM python:3.11-slim
+# Use stable Python version
+FROM python:3.10-slim
 
-# Set the working directory
+# Set working directory
 WORKDIR /code
 
-# Copy and install requirements system-wide as root
-COPY ./requirements.txt /code/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+# Install system dependencies (important)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Create a non-root user for security
-RUN useradd --create-home --shell /bin/bash appuser
+# Copy requirements first (better caching)
+COPY requirements.txt .
 
-# Create necessary directories AND give ownership to the new user
-RUN mkdir -p /code/model_cache && chown -R appuser:appuser /code/model_cache
-RUN mkdir -p /code/temp_docs && chown -R appuser:appuser /code/temp_docs
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code and give ownership
-COPY --chown=appuser:appuser . /code/
+# Copy project files
+COPY . .
 
-# Switch to the non-root user
-USER appuser
+# Create cache + temp directories
+RUN mkdir -p /code/model_cache /code/temp_docs
 
-# Run the Gunicorn server
-CMD ["gunicorn", "-w", "1", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:7860", "main:app"]
+# Set environment for HuggingFace cache (important)
+ENV HF_HOME=/code/model_cache
+
+# Expose port (optional but good practice)
+EXPOSE 7860
+
+# Start FastAPI
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
