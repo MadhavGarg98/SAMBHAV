@@ -1,0 +1,47 @@
+/* Navbar Styles */
+.navbar {
+  background-color: #06b6d4;
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.navbar-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  box-sizing: border-box;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-title {
+  font-size: 1.50rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.navbar-subtitle {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-left: 0.75rem;
+}
+
+.navbar-info {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Add padding to main content to account for fixed navbar */
+.main-content {
+  padding-top: 64px;
+}

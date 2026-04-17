@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import ChatWindow from './components/ChatWindow';
-import InputBar from './components/InputBar';
+import Navbar from './components/Navbar';
+import FixedInputBar from './components/FixedInputBar';
+import HeroSection from './components/HeroSection';
 import axios from 'axios';
 import './App.css';
 
@@ -8,6 +10,9 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [documentUrl, setDocumentUrl] = useState('');
+  const [inputText, setInputText] = useState('');
+  const [showUploadDevMessage, setShowUploadDevMessage] = useState(false);
+  const [isChatStarted, setIsChatStarted] = useState(false);
 
   const formatTimestamp = () => {
     return new Date().toLocaleTimeString('en-US', { 
@@ -16,21 +21,26 @@ function App() {
     });
   };
 
+  const handleSuggestionClick = (suggestion) => {
+    setInputText(suggestion);
+  };
+
   const handleSendMessage = async (userMessage) => {
     if (!documentUrl.trim()) {
       alert('Please provide a document URL first');
       return;
     }
 
-    // Add user message
+    setIsChatStarted(true);
     const userMsg = {
-      type: 'user',
+      role: 'user',
       content: userMessage,
       timestamp: formatTimestamp()
     };
     
     setMessages(prev => [...prev, userMsg]);
     setIsLoading(true);
+    setInputText('');
 
     try {
       const response = await axios.post(
@@ -50,7 +60,7 @@ function App() {
       const aiResponse = response.data?.answers?.[0] || 'Sorry, I could not process your request.';
       
       const aiMsg = {
-        type: 'ai',
+        role: 'ai',
         content: aiResponse,
         timestamp: formatTimestamp()
       };
@@ -60,7 +70,7 @@ function App() {
       console.error('API Error:', error);
       
       const errorMsg = {
-        type: 'ai',
+        role: 'ai',
         content: 'Sorry, there was an error processing your request. Please check your document URL and try again.',
         timestamp: formatTimestamp()
       };
@@ -72,25 +82,32 @@ function App() {
   };
 
   return (
-    <div className="app-container">
-      {/* Header */}
-      <header className="app-header">
-        <div className="header-content">
-          <h1 className="app-title">Sambhav AI</h1>
-          <p className="app-subtitle">AI-powered document Q&A</p>
+    <div className="app">
+      <Navbar />
+      
+      {!isChatStarted && <HeroSection onSuggestionClick={handleSuggestionClick} />}
+      
+      <div className="chat-container">
+        <div className="chat-wrapper">
+          <ChatWindow 
+            messages={messages} 
+            isLoading={isLoading} 
+          />
         </div>
-      </header>
+      </div>
 
-      {/* Chat Window */}
-      <ChatWindow messages={messages} isLoading={isLoading} />
-
-      {/* Input Bar */}
-      <InputBar 
-        onSendMessage={handleSendMessage}
-        isLoading={isLoading}
-        documentUrl={documentUrl}
-        setDocumentUrl={setDocumentUrl}
-      />
+      <div className="input-container">
+        <FixedInputBar 
+          onSendMessage={handleSendMessage}
+          isLoading={isLoading}
+          documentUrl={documentUrl}
+          setDocumentUrl={setDocumentUrl}
+          inputText={inputText}
+          setInputText={setInputText}
+          onUploadModeClick={() => setShowUploadDevMessage(true)}
+          showUploadDevMessage={showUploadDevMessage}
+        />
+      </div>
     </div>
   );
 }
